@@ -1,83 +1,92 @@
-document.addEventListener("DOMContentLoaded", function(){
-    let squares = document.querySelectorAll('#board div')
-    var i;
-    for (let i = 0; i < squares.length; i++){
-        squares[i].setAttribute('class', 'square');
-        
-}
-boardstatus = new Array(0);
-const X_class = 'X';
-const O_class = 'O';
-let circleTurn;
-for (var x = 0; x < squares.length; x++){
-    squares[x].addEventListener("mouseover", function (){
-        this.classList.add("hover");
+"use strict";
+onload = function(){
+    //Variable Declarations
+    let board = document.getElementById("board");
+    let boxes = board.querySelectorAll("div");
+    const newGame = document.querySelector(".btn");
+    let play = true;
+
+    //Array to keep track of where each player is
+    let gameState = ["", "", "", "", "", "", "", "", ""];
+
+    //Array to record all winning conditions of the game
+    let winLog =[   [0,1,2], [3,4,5],
+                    [6,7,8], [0,4,8],
+                    [2,4,6], [0,3,6],
+                    [2,5,8], [1,4,7]];
+
+    //Counter to keep track of each play to see if it is even(X) or odd(O)
+    let counter = 0;
+
+    //Excercise 5 - resetting game
+    newGame.addEventListener("click", e =>{
+        location.reload();
     });
-        
-    squares[x].addEventListener("mouseout", function (){
-        this.classList.remove("hover");
-    });	
-    squares[x].addEventListener ('click', function(){
-        if (this.innerHTML !== "X" && this.innerHTML !== "O"){
-            let currentPlayer = circleTurn ? O_class: X_class
-            this.innerHTML = currentPlayer;
-            circleTurn = !circleTurn;
-            this.classList.add("square","X");
-            boardstatus.push (currentPlayer);
-            winner();
-            
-            console.log(boardstatus);
-            
-            
+
+    //Excercise 1 - displaying grid
+    boxes.forEach(function(elem, index) {
+        elem.setAttribute("class", "square");
+
+            //Excercise 2 - allowing X and O placement in grid
+            elem.addEventListener("click", function(){
+
+            if(counter%2===0 && elem.innerHTML===""){
+                if(play!=false){
+                    elem.innerHTML="X";
+                    elem.classList.add("square", "X");
+
+                    counter++;
+                    gameState[index]="X";
+                    check();
+                }
             }
-        })
-            
-        } 
-        function winner(){
-            if(squares[0].innerHTML === "X" && squares[0].innerHTML === squares[1].innerHTML && squares[0].innerHTML === squares[2].innerHTML ||
-            squares[0].innerHTML === "O" && squares[0].innerHTML === squares[1].innerHTML && squares[0].innerHTML === squares[2].innerHTML ){
-                var jackpot = squares[0].innerHTML;
-                document.getElementById("status").innerHTML = "Congratulations! " + jackpot + " is the Winner!";
-                document.getElementById("status").className=("you-won");
-            }else if (squares[0].innerHTML === "X" && squares[0].innerHTML === squares[3].innerHTML && squares[0].innerHTML === squares[6].innerHTML ||
-            squares[0].innerHTML === "O" && squares[0].innerHTML === squares[3].innerHTML && squares[0].innerHTML === squares[6].innerHTML ){
-                var jackpot = squares[0].innerHTML;
-                document.getElementById("status").innerHTML = "Congratulations! " + jackpot + " is the Winner!";
-                document.getElementById("status").className=("you-won");
-            }else if (squares[0].innerHTML === 'X' && squares[0].innerHTML === squares[4].innerHTML && squares[0].innerHTML === squares[8].innerHTML ||
-            squares[0].innerHTML !== "O" && squares[0].innerHTML === squares[4].innerHTML && squares[0].innerHTML === squares[8].innerHTML){
-                var jackpot = squares[0].innerHTML;
-                document.getElementById("status").innerHTML = "Congratulations! " + jackpot + " is the Winner!";
-                document.getElementById("status").className=("you-won");
-            }else if (squares[3].innerHTML === "X" && squares[3].innerHTML === squares[4].innerHTML && squares[3].innerHTML === squares[5].innerHTML ||
-            squares[3].innerHTML === "O" && squares[3].innerHTML === squares[4].innerHTML && squares[3].innerHTML === squares[5].innerHTML ){
-                var jackpot = squares[3].innerHTML;
-                document.getElementById("status").innerHTML = "Congratulations! " + jackpot + " is the Winner!";
-                document.getElementById("status").className=("you-won");
-            }else if (squares[6].innerHTML === "X" && squares[6].innerHTML === squares[7].innerHTML && squares[6].innerHTML === squares[8].innerHTML ||
-            squares[6].innerHTML === "O" && squares[6].innerHTML === squares[7].innerHTML && squares[6].innerHTML === squares[8].innerHTML ){
-                var jackpot = squares[6].innerHTML;
-                document.getElementById("status").innerHTML = "Congratulations! " + jackpot + " is the Winner!";
-                document.getElementById("status").className=("you-won");
-            }else if (squares[1].innerHTML === "X" && squares[1].innerHTML === squares[4].innerHTML && squares[1].innerHTML === squares[7].innerHTML ||
-            squares[1].innerHTML === "O" && squares[1].innerHTML === squares[4].innerHTML && squares[1].innerHTML === squares[7].innerHTML){
-                var jackpot = squares[1].innerHTML;
-                document.getElementById("status").innerHTML = "Congratulations! " + jackpot + " is the Winner!";
-                document.getElementById("status").className=("you-won");
-            }else if (squares[2].innerHTML === "X" && squares[2].innerHTML === squares[5].innerHTML && squares[2].innerHTML === squares[8].innerHTML ||
-            squares[2].innerHTML === "O" && squares[2].innerHTML === squares[5].innerHTML && squares[2].innerHTML === squares[8].innerHTML ){
-                var jackpot = squares[2].innerHTML;
-                document.getElementById("status").innerHTML = "Congratulations! " + jackpot + " is the Winner!";
-                document.getElementById("status").className=("you-won");
-            }else if (squares[2].innerHTML === "X" && squares[4].innerHTML === 'X' && squares[6].innerHTML === 'X'  ||
-            squares[2].innerHTML === "O" && squares[4].innerHTML === 'O' && squares[6].innerHTML === "O"  ){
-                var jackpot = squares[2].innerHTML;
-                document.getElementById("status").innerHTML = "Congratulations! " + jackpot + " is the Winner!";
-                document.getElementById("status").className=("you-won");
+
+            else if(counter%2===1 && elem.innerHTML===""){
+                if(play!=false){
+                    elem.innerHTML="O";
+                    elem.classList.add("square", "O");
+
+                    counter++;
+                    gameState[index]="O";
+                    check();
+                }
+            }
+        }); 
+        
+        //Excercise 3 - adding and removing hover effects
+        elem.addEventListener("mouseover", function(){
+            this.classList.add("hover");
+        });
+
+        elem.addEventListener("mouseout", function(){
+            this.classList.remove("hover");
+        });
+    });
+
+    //Excercise 4 - checking who wins a match
+    function check(){
+        for(let i=0; i<8; i++){
+            let winState = winLog[i];
+
+            let pos1 = gameState[winState[0]];
+            let pos2 = gameState[winState[1]];
+            let pos3 = gameState[winState[2]];
+
+            if(pos1==="" || pos2==="" || pos3===""){
+                continue; 
+            }
+            else if(pos1===pos2 && pos2===pos3){
+                let statUpdate = document.getElementById("status");
+                if(pos1==="X"){
+                    statUpdate.innerHTML = "Congratulations! X is the winner!";
+                }
+                else if(pos1==="O"){
+                    statUpdate.innerHTML = "Congratulations! O is the winner!";
+                }   
+                statUpdate.classList.add("status", "you-won");
+                play = false;
+                break;
             }
         }
-        var restartbtn = document.querySelector("button");
-	    restartbtn.addEventListener("click",function(){
-		window.location.reload();		
-	})
-})
+    }
+}   

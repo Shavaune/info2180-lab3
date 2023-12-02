@@ -1,3 +1,3 @@
 # info2180-lab3
 
-This lab is for Andrew Sterling 
+This lab 3 is for Andrew Sterling 
